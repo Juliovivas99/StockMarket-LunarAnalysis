@@ -222,28 +222,49 @@ all_returns_by_phase['PhaseOrder'] = all_returns_by_phase['Phase'].map({phase: i
 all_returns_by_phase = all_returns_by_phase.sort_values('PhaseOrder')
 
 # Create a bar chart of average returns by lunar phase
-plt.figure(figsize=(14, 8))
-ax = sns.barplot(x='Phase', y='Average_Return', data=all_returns_by_phase, order=phase_order)
-plt.title('Average Stock Returns by Lunar Phase (All ETFs)', fontsize=16)
-plt.xlabel('Lunar Phase', fontsize=14)
-plt.ylabel('Average Daily Return (%)', fontsize=14)
-plt.xticks(rotation=45)
-plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.figure(figsize=(10, 6))
+plt.style.use('default')
 
-# Add value labels on top of each bar
-for i, bar in enumerate(ax.patches):
-    ax.text(
-        bar.get_x() + bar.get_width() / 2,
-        bar.get_height() + (0.01 if bar.get_height() >= 0 else -0.03),
-        f'{bar.get_height():.2f}%',
-        ha='center',
-        va='bottom' if bar.get_height() >= 0 else 'top',
-        fontsize=10
-    )
+# Set the background color
+plt.gca().set_facecolor('#f8f9fa')
+plt.gcf().set_facecolor('#f8f9fa')
 
+# Create color gradient from blue to red
+colors = []
+for i in range(len(phase_order)):
+    if i < len(phase_order) // 2:
+        # Blue gradient for first half
+        intensity = 0.4 + (i / (len(phase_order) // 2)) * 0.6
+        colors.append((0.3, 0.5, 0.9, intensity))
+    else:
+        # Red gradient for second half
+        intensity = 0.4 + ((i - len(phase_order) // 2) / (len(phase_order) // 2)) * 0.6
+        colors.append((0.9, 0.4, 0.4, intensity))
+
+# Create bar plot
+bars = plt.bar(range(len(phase_order)), all_returns_by_phase['Average_Return'], color=colors)
+
+# Customize the plot
+plt.title('Average Stock Returns by Lunar Phase', fontsize=12, pad=15)
+plt.xlabel('Lunar Phase', fontsize=10)
+plt.ylabel('Average Daily Return', fontsize=10)
+
+# Set x-axis ticks and labels
+plt.xticks(range(len(phase_order)), phase_order, rotation=45, ha='right')
+
+# Add gridlines
+plt.grid(axis='y', linestyle='--', alpha=0.2)
+
+# Remove top and right spines
+plt.gca().spines['top'].set_visible(False)
+plt.gca().spines['right'].set_visible(False)
+
+# Adjust layout
 plt.tight_layout()
-plt.savefig('returns_by_lunar_phase.png')
-print("Generated returns by lunar phase chart (returns_by_lunar_phase.png)")
+
+# Save the figure
+plt.savefig('visualizations/returns_by_lunar_phase.png', dpi=300, bbox_inches='tight', facecolor='#f8f9fa')
+print("Generated returns by lunar phase chart (visualizations/returns_by_lunar_phase.png)")
 
 # 5. Perform ANOVA test to check if returns vary significantly by lunar phase
 print("\n5. Performing ANOVA test for returns by lunar phase...")
