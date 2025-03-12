@@ -1,0 +1,4 @@
+data/SPY_stock_2025-03-11.csv
+data/QQQ_stock_2025-03-11.csv
+data/DIA_stock_2025-03-11.csv
+data/IWM_stock_2025-03-11.csv

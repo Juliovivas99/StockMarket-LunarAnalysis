@@ -1,0 +1,345 @@
+<h1 id="stock-market-lunar-phase-analysis-data-engineering-report">Stock
+Market &amp; Lunar Phase Analysis: Data Engineering Report</h1>
+<p><em>Generated on March 12, 2025</em></p>
+<h2 id="executive-summary">Executive Summary</h2>
+<p>This data engineering project investigates the relationship between
+lunar cycles and stock market behavior. The project integrates stock
+price data for major ETFs (SPY, QQQ, DIA, IWM) with lunar phase data to
+determine if lunar phases have any measurable impact on stock market
+returns or trading volume.</p>
+<h3 id="project-objectives">Project Objectives</h3>
+<ul>
+<li>Create a scalable Azure-based data pipeline for stock and lunar
+data</li>
+<li>Merge market data with lunar cycles for correlation analysis</li>
+<li>Analyze stock returns and trading volume by lunar phase</li>
+<li>Determine the statistical significance of any observed
+relationships</li>
+</ul>
+<h3 id="key-findings">Key Findings</h3>
+<ul>
+<li>Correlations between lunar phases and stock metrics are negligible
+(all below 0.03)</li>
+<li>Only DIA (Dow 30 ETF) shows statistically significant volume
+variation by lunar phase (p=0.0069)</li>
+<li>Return differences across lunar phases are not statistically
+significant</li>
+<li>Full Moon and Last Quarter phases show marginally higher average
+returns (0.15%), while Waxing Crescent shows lowest returns
+(-0.10%)</li>
+</ul>
+<h3 id="conclusion">Conclusion</h3>
+<p>The data does not support the hypothesis that lunar phases
+meaningfully influence stock market behavior. The statistically
+significant volume variation for DIA is interesting but has limited
+practical application given the weak correlation strength (0.0197).</p>
+<h2 id="data-pipeline-overview">Data Pipeline Overview</h2>
+<h3 id="architecture-diagram">Architecture Diagram</h3>
+<pre><code>┌─────────────┐    ┌───────────────┐    ┌────────────────┐    ┌───────────────┐    ┌─────────────────┐
+│ Data Sources│    │ Azure Blob    │    │ Azure SQL      │    │ Analysis &amp;    │    │ Reporting &amp;     │
+│             │───&gt;│ Storage       │───&gt;│ Database       │───&gt;│ Statistics    │───&gt;│ Visualization   │
+└─────────────┘    └───────────────┘    └────────────────┘    └───────────────┘    └─────────────────┘
+     │                    │                    │                     │                     │
+     ▼                    ▼                    ▼                     ▼                     ▼
+┌─────────────┐    ┌───────────────┐    ┌────────────────┐    ┌───────────────┐    ┌─────────────────┐
+│- Yahoo      │    │- Raw Stock    │    │- SPY_StockPrices│    │- Correlations │    │- Markdown      │
+│  Finance API│    │  Container    │    │- QQQ_StockPrices│    │- ANOVA Tests  │    │  Reports       │
+│- NASA Lunar │    │- Raw Lunar    │    │- DIA_StockPrices│    │- Average      │    │- Visualizations│
+│  API        │    │  Container    │    │- IWM_StockPrices│    │  Returns      │    │- Azure         │
+│             │    │               │    │- LunarPhases    │    │               │    │  Dashboard     │
+└─────────────┘    └───────────────┘    └────────────────┘    └───────────────┘    └─────────────────┘</code></pre>
+<h3 id="pipeline-components">Pipeline Components</h3>
+<ol type="1">
+<li><p><strong>Data Extraction</strong></p>
+<ul>
+<li>Stock data extracted from Yahoo Finance API (prices and volume for
+SPY, QQQ, DIA, IWM)</li>
+<li>Lunar phase data extracted from NASA API</li>
+<li>Python scripts automate the extraction process</li>
+</ul></li>
+<li><p><strong>Data Storage</strong></p>
+<ul>
+<li>Raw data stored in Azure Blob Storage (separate containers for stock
+and lunar data)</li>
+<li>SAS tokens used for secure access</li>
+<li>Containers provide scalable, durable storage for raw data</li>
+</ul></li>
+<li><p><strong>Data Processing &amp; Database</strong></p>
+<ul>
+<li>Data transferred to Azure SQL Database for structured storage and
+analysis</li>
+<li>ETL scripts handle data cleaning, transformation, and loading</li>
+<li>Stock and lunar data joined on date for integrated analysis</li>
+</ul></li>
+<li><p><strong>Analysis &amp; Statistics</strong></p>
+<ul>
+<li>Correlation analysis between lunar phases and stock metrics</li>
+<li>ANOVA tests to detect statistically significant differences</li>
+<li>Statistical calculations performed in Python with scipy and
+pandas</li>
+</ul></li>
+<li><p><strong>Reporting &amp; Visualization</strong></p>
+<ul>
+<li>Automated report generation using Python</li>
+<li>Data visualizations created with matplotlib and seaborn</li>
+<li>Results stored in SQL tables for future reference</li>
+</ul></li>
+<li><p><strong>Automation</strong></p>
+<ul>
+<li>Azure Automation Account with Python Runbooks</li>
+<li>PowerShell scripts orchestrate the analysis workflow</li>
+<li>Scheduled weekly execution for ongoing monitoring</li>
+</ul></li>
+</ol>
+<h2 id="data-insights-visualizations">Data Insights &amp;
+Visualizations</h2>
+<h3 id="stock-price-trends">1. Stock Price Trends</h3>
+<p>The analysis covered daily stock price data for major ETFs over a
+period of approximately 5 years (1,255 trading days per ETF). The
+correlation with lunar phases was examined to identify any potential
+patterns.</p>
+<h3 id="correlation-analysis-heatmap">2. Correlation Analysis
+(Heatmap)</h3>
+<p>The heatmap below shows the correlation between lunar phases and
+various stock metrics:</p>
+<figure>
+<img src="../visualizations/correlation_heatmap.png"
+alt="Correlation Heatmap" />
+<figcaption aria-hidden="true">Correlation Heatmap</figcaption>
+</figure>
+<p><strong>Key Insights:</strong></p>
+<ul>
+<li>All correlations between lunar phases and stock metrics are
+extremely weak (&lt; 0.03)</li>
+<li>Close prices show slightly negative correlations with lunar
+phase</li>
+<li>Trading volume shows slightly positive correlations with lunar
+phase</li>
+<li>Return correlations are negligibly positive</li>
+</ul>
+<h3 id="stock-returns-by-lunar-phase-bar-chart">3. Stock Returns by
+Lunar Phase (Bar Chart)</h3>
+<p>The following chart shows the average daily returns (%) for each
+lunar phase across all ETFs:</p>
+<figure>
+<img src="../visualizations/returns_by_lunar_phase.png"
+alt="Returns by Lunar Phase" />
+<figcaption aria-hidden="true">Returns by Lunar Phase</figcaption>
+</figure>
+<p><strong>Key Insights:</strong></p>
+<ul>
+<li>Full Moon and Last Quarter phases show the highest average returns
+(~0.15%)</li>
+<li>Waxing Crescent shows the lowest average returns (-0.10%)</li>
+<li>The pattern is not statistically significant based on ANOVA
+tests</li>
+<li>Return variations by lunar phase are inconsistent across individual
+ETFs</li>
+</ul>
+<h3 id="trading-volume-vs-lunar-phases-anova-results">4. Trading Volume
+vs Lunar Phases (ANOVA Results)</h3>
+<p>ANOVA tests were performed to determine if trading volume varies
+significantly across lunar phases:</p>
+<table>
+<colgroup>
+<col style="width: 3%" />
+<col style="width: 18%" />
+<col style="width: 17%" />
+<col style="width: 13%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr>
+<th>ETF</th>
+<th>Correlation_Volume</th>
+<th>ANOVA_F_Statistic</th>
+<th>ANOVA_P_Value</th>
+<th>Conclusion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DIA</td>
+<td>0.0197</td>
+<td>2.7952</td>
+<td>0.0069</td>
+<td>Significant volume variation by lunar phase</td>
+</tr>
+<tr>
+<td>QQQ</td>
+<td>0.0259</td>
+<td>1.6982</td>
+<td>0.1054</td>
+<td>No significant volume variation by lunar phase</td>
+</tr>
+<tr>
+<td>IWM</td>
+<td>0.0206</td>
+<td>1.4112</td>
+<td>0.1967</td>
+<td>No significant volume variation by lunar phase</td>
+</tr>
+<tr>
+<td>SPY</td>
+<td>0.0199</td>
+<td>1.8192</td>
+<td>0.0799</td>
+<td>No significant volume variation by lunar phase</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Insights:</strong></p>
+<ul>
+<li>Only DIA shows statistically significant volume variation by lunar
+phase (p &lt; 0.05)</li>
+<li>All correlation values are very weak (&lt; 0.03)</li>
+<li>The F-statistic for DIA (2.7952) indicates some meaningful
+variation, but the correlation strength limits practical
+applications</li>
+</ul>
+<h3 id="stock-returns-by-lunar-phase-anova-results">5. Stock Returns by
+Lunar Phase (ANOVA Results)</h3>
+<p>ANOVA tests for stock returns across lunar phases:</p>
+<table>
+<thead>
+<tr>
+<th>ETF</th>
+<th>ANOVA_F_Statistic</th>
+<th>ANOVA_P_Value</th>
+<th>Statistically Significant</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SPY</td>
+<td>0.6485</td>
+<td>0.7159</td>
+<td>No</td>
+</tr>
+<tr>
+<td>QQQ</td>
+<td>0.6551</td>
+<td>0.7103</td>
+<td>No</td>
+</tr>
+<tr>
+<td>DIA</td>
+<td>0.8439</td>
+<td>0.5509</td>
+<td>No</td>
+</tr>
+<tr>
+<td>IWM</td>
+<td>0.5564</td>
+<td>0.7916</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Insights:</strong></p>
+<ul>
+<li>None of the ETFs show statistically significant return variations by
+lunar phase</li>
+<li>P-values are well above the 0.05 threshold for significance</li>
+<li>Any observed return patterns are likely due to random chance</li>
+</ul>
+<h3 id="final-data-tables">6. Final Data Tables</h3>
+<p><strong>LunarPhaseReturns Table</strong></p>
+<ul>
+<li>Contains average daily returns for each ETF and lunar phase</li>
+<li>Includes sample count for statistical validity</li>
+<li>Updated automatically with each analysis run</li>
+</ul>
+<p><strong>StockLunarAnalysisResults Table</strong></p>
+<ul>
+<li>Stores ANOVA test results for volume and returns by lunar phase</li>
+<li>Tracks correlation values between lunar phases and trading
+volume</li>
+<li>Provides statistical significance conclusions</li>
+<li>Updated weekly via automation</li>
+</ul>
+<h2 id="sql-queries-data-access">SQL Queries &amp; Data Access</h2>
+<p>Key SQL queries used for analysis:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Join stock prices with lunar phases</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> s.[<span class="dt">Date</span>], s.[<span class="kw">Open</span>], s.[High], s.[Low], s.[<span class="kw">Close</span>], s.[Volume], l.[Phase]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> SPY_StockPrices s</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">JOIN</span> LunarPhases l <span class="kw">ON</span> <span class="fu">CAST</span>(s.[<span class="dt">Date</span>] <span class="kw">AS</span> <span class="dt">DATE</span>) <span class="op">=</span> <span class="fu">CAST</span>(l.[<span class="dt">Date</span>] <span class="kw">AS</span> <span class="dt">DATE</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> s.[<span class="dt">Date</span>];</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- Query for average returns by lunar phase for all ETFs</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> lr.LunarPhase,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>       <span class="fu">AVG</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> lr.ETF <span class="op">=</span> <span class="st">&#39;SPY&#39;</span> <span class="cf">THEN</span> lr.AverageReturn <span class="cf">END</span>) <span class="kw">AS</span> SPY_Return,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>       <span class="fu">AVG</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> lr.ETF <span class="op">=</span> <span class="st">&#39;QQQ&#39;</span> <span class="cf">THEN</span> lr.AverageReturn <span class="cf">END</span>) <span class="kw">AS</span> QQQ_Return,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>       <span class="fu">AVG</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> lr.ETF <span class="op">=</span> <span class="st">&#39;DIA&#39;</span> <span class="cf">THEN</span> lr.AverageReturn <span class="cf">END</span>) <span class="kw">AS</span> DIA_Return,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>       <span class="fu">AVG</span>(<span class="cf">CASE</span> <span class="cf">WHEN</span> lr.ETF <span class="op">=</span> <span class="st">&#39;IWM&#39;</span> <span class="cf">THEN</span> lr.AverageReturn <span class="cf">END</span>) <span class="kw">AS</span> IWM_Return,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>       <span class="fu">AVG</span>(lr.AverageReturn) <span class="kw">AS</span> Average_Return</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> LunarPhaseReturns lr</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> lr.LunarPhase</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">CASE</span> lr.LunarPhase</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;New Moon&#39;</span> <span class="cf">THEN</span> <span class="dv">1</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;Waxing Crescent&#39;</span> <span class="cf">THEN</span> <span class="dv">2</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;First Quarter&#39;</span> <span class="cf">THEN</span> <span class="dv">3</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;Waxing Gibbous&#39;</span> <span class="cf">THEN</span> <span class="dv">4</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;Full Moon&#39;</span> <span class="cf">THEN</span> <span class="dv">5</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;Waning Gibbous&#39;</span> <span class="cf">THEN</span> <span class="dv">6</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;Last Quarter&#39;</span> <span class="cf">THEN</span> <span class="dv">7</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;Waning Crescent&#39;</span> <span class="cf">THEN</span> <span class="dv">8</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">END</span>;</span></code></pre></div>
+<h2 id="conclusion-business-impact">Conclusion &amp; Business
+Impact</h2>
+<h3 id="summary-of-findings">Summary of Findings</h3>
+<p>This analysis challenges the notion that lunar cycles influence stock
+market behavior in any meaningful way. While there are some variations
+in returns and trading volume across different lunar phases, these
+differences are generally:</p>
+<ol type="1">
+<li>Very small in magnitude (correlations &lt; 0.03)</li>
+<li>Not statistically significant for most metrics</li>
+<li>Inconsistent across different ETFs</li>
+<li>Likely attributable to random variation rather than lunar
+influence</li>
+</ol>
+<p>The one exception is DIA (Dow 30 ETF), which shows statistically
+significant trading volume variation by lunar phase. However, the
+correlation is still very weak (0.0197), limiting its practical
+application.</p>
+<h3 id="practical-applications">Practical Applications</h3>
+<p>Despite the lack of strong lunar influence, this project
+provides:</p>
+<ol type="1">
+<li><strong>Data Infrastructure Value</strong>: The Azure-based data
+pipeline provides a scalable, automated framework for ongoing market
+analysis that can be extended to other factors</li>
+<li><strong>Methodology Template</strong>: The statistical approach can
+be applied to analyze other potential market influences</li>
+<li><strong>Market Behavior Insights</strong>: The analysis confirms
+that major ETFs generally follow rational economic principles rather
+than astronomical influences</li>
+<li><strong>Data-Driven Decision Making</strong>: Demonstrates how
+empirical analysis can test and disprove popular market theories</li>
+</ol>
+<h3 id="future-improvements">Future Improvements</h3>
+<ol type="1">
+<li><strong>Expanded Data Sources</strong>: Include additional market
+data (volatility indices, sector ETFs, commodities)</li>
+<li><strong>Advanced Analytics</strong>: Apply machine learning for
+pattern recognition beyond simple statistical tests</li>
+<li><strong>Real-Time Processing</strong>: Enhance the pipeline to
+support near-real-time data for more timely insights</li>
+<li><strong>Alternative Factors</strong>: Analyze other potential market
+influences (seasonality, day of week, economic indicators)</li>
+<li><strong>Dashboard Development</strong>: Create an interactive Power
+BI dashboard for exploring the relationships visually</li>
+</ol>
+<h3 id="final-thoughts">Final Thoughts</h3>
+<p>This project demonstrates the value of robust data engineering
+practices in financial analysis. While the lunar cycle hypothesis was
+not supported, the infrastructure and methodology developed provide a
+foundation for ongoing market analysis. The automated pipeline ensures
+that as new data becomes available, the analysis can be refreshed with
+minimal effort, supporting data-driven decision making.</p>
+<hr />
+<p><em>Report prepared by the Data Engineering Team</em> <em>For
+questions or further details, please contact the project team</em></p>
